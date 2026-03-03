@@ -21,7 +21,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black z-10 pointer-events-none" />
 
         <div className="relative z-20 container mx-auto px-5 md:px-4 min-h-screen flex flex-col justify-center items-center text-center pt-20 md:pt-24 pb-8">
-          <ParallaxLayer speed={-0.08} fadeOut className="flex flex-col items-center">
+          <ParallaxLayer speed={-0.25} fadeOut className="flex flex-col items-center">
             <RevealOnScroll delay={0.2}>
               <div className="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full bg-white/5 border border-[#FFD700]/20 backdrop-blur-md mb-6 md:mb-8">
                 <span className="flex h-2 w-2 rounded-full bg-[#FFD700] animate-pulse"></span>
@@ -30,7 +30,7 @@ export default function Home() {
             </RevealOnScroll>
           </ParallaxLayer>
 
-          <ParallaxLayer speed={-0.15} fadeOut className="flex flex-col items-center">
+          <ParallaxLayer speed={-0.45} fadeOut className="flex flex-col items-center">
             <RevealOnScroll delay={0.4}>
               <h1 className="font-heading font-bold text-[2rem] sm:text-4xl md:text-5xl lg:text-7xl xl:text-[5.5rem] tracking-tight text-white mb-5 md:mb-6 leading-[1.1] md:leading-[1.05] px-2 sm:px-0">
                 We Make Your Property
@@ -42,7 +42,7 @@ export default function Home() {
             </RevealOnScroll>
           </ParallaxLayer>
 
-          <ParallaxLayer speed={-0.22} fadeOut className="flex flex-col items-center w-full">
+          <ParallaxLayer speed={-0.65} fadeOut className="flex flex-col items-center w-full">
             <RevealOnScroll delay={0.6}>
               <p className="max-w-2xl mx-auto text-base md:text-lg lg:text-xl text-white/50 mb-8 md:mb-10 leading-relaxed px-2 sm:px-0">
                 Professional window cleaning, eavestrough maintenance, and commercial exteriors for Canadian homeowners and businesses. Eco-friendly. Fully insured. Satisfaction guaranteed.
@@ -63,7 +63,7 @@ export default function Home() {
           </ParallaxLayer>
 
           {/* Trust bar — fastest parallax */}
-          <ParallaxLayer speed={-0.3} fadeOut className="w-full">
+          <ParallaxLayer speed={-0.9} fadeOut className="w-full">
             <RevealOnScroll delay={1.0}>
               <div className="mt-10 md:mt-16 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-4 sm:gap-8 text-white/30 text-xs sm:text-sm">
                 <div className="flex items-center justify-center gap-2">

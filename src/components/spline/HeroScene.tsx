@@ -60,9 +60,9 @@ export default function HeroScene() {
 
         const particles: Particle[] = []
         const layerConfig = [
-            { count: 25, radiusMin: 0.3, radiusMax: 0.8, opacityMin: 0.05, opacityMax: 0.15, speedFactor: 0.15, parallaxFactor: 0.1 },  // far - tiny, dim, slow
-            { count: 25, radiusMin: 0.5, radiusMax: 1.2, opacityMin: 0.1, opacityMax: 0.3, speedFactor: 0.25, parallaxFactor: 0.3 },   // mid
-            { count: 15, radiusMin: 1.0, radiusMax: 2.0, opacityMin: 0.2, opacityMax: 0.5, speedFactor: 0.4, parallaxFactor: 0.6 },    // near - larger, brighter, faster
+            { count: 25, radiusMin: 0.3, radiusMax: 0.8, opacityMin: 0.05, opacityMax: 0.15, speedFactor: 0.15, parallaxFactor: 0.3 },  // far - tiny, dim, slow
+            { count: 25, radiusMin: 0.5, radiusMax: 1.2, opacityMin: 0.1, opacityMax: 0.3, speedFactor: 0.25, parallaxFactor: 0.8 },   // mid
+            { count: 15, radiusMin: 1.0, radiusMax: 2.0, opacityMin: 0.2, opacityMax: 0.5, speedFactor: 0.4, parallaxFactor: 1.5 },    // near - larger, brighter, faster
         ]
 
         layerConfig.forEach((config, layerIndex) => {
@@ -89,7 +89,7 @@ export default function HeroScene() {
             angle: Math.random() * Math.PI * 2,
             speed: (Math.random() - 0.5) * 0.3,
             opacity: Math.random() * 0.04 + 0.01,
-            parallaxFactor: 0.2 + Math.random() * 0.3,
+            parallaxFactor: 0.6 + Math.random() * 0.8,
         }))
 
         let time = 0
@@ -104,10 +104,10 @@ export default function HeroScene() {
 
             // === AMBIENT NEBULA ORBS (parallax-aware) ===
             const orbs = [
-                { x: 0.2, y: 0.3, r: 280, opacity: 0.035, parallax: 0.15 },
-                { x: 0.8, y: 0.6, r: 220, opacity: 0.025, parallax: 0.25 },
-                { x: 0.5, y: 0.15, r: 320, opacity: 0.02, parallax: 0.1 },
-                { x: 0.7, y: 0.8, r: 180, opacity: 0.02, parallax: 0.35 },
+                { x: 0.2, y: 0.3, r: 280, opacity: 0.035, parallax: 0.5 },
+                { x: 0.8, y: 0.6, r: 220, opacity: 0.025, parallax: 0.8 },
+                { x: 0.5, y: 0.15, r: 320, opacity: 0.02, parallax: 0.3 },
+                { x: 0.7, y: 0.8, r: 180, opacity: 0.02, parallax: 1.0 },
             ]
             orbs.forEach((orb, i) => {
                 const parallaxOffset = scroll * orb.parallax
@@ -222,7 +222,7 @@ export default function HeroScene() {
 
             // === CENTRAL PULSING CORE ===
             const cx = canvas.width / 2
-            const cy = canvas.height / 2 - scroll * 0.2
+            const cy = canvas.height / 2 - scroll * 0.6
             const pulseSize = 180 + Math.sin(time * 1.5) * 40
             const centerGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, pulseSize)
             centerGlow.addColorStop(0, 'rgba(255, 215, 0, 0.04)')
