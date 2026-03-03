@@ -1,26 +1,147 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-primary: #FFD700;
+  --color-primary-dark: #00A3D9;
+  --color-secondary: #FFC107;
+  --color-gold: #FFD700;
+  --color-gold-dark: #E5C100;
+  --color-dark-bg: #000000;
+  --color-dark-surface: #111111;
+  --color-dark-surface-hover: #1A1A1A;
+  --color-accent: #A855F7;
+  --font-heading: var(--font-jakarta), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
+  --font-accent: var(--font-space), monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@custom-variant dark (&:is(.dark *));
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #FFFFFF;
+    --foreground: #000000;
+  }
+
+  .dark {
+    --background: #000000;
+    --foreground: #FFFFFF;
   }
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Premium glow utilities */
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+
+  .glass-dark {
+    @apply bg-[#111111]/80 backdrop-blur-xl border border-white/10;
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.15), 0 0 60px rgba(0, 212, 255, 0.05);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.15), 0 0 60px rgba(255, 215, 0, 0.05);
+  }
+}
+
+/* Animated gradient text */
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-text {
+  background-size: 200% auto;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Floating particles for footer */
+@keyframes float-up {
+  0% {
+    transform: translateY(100%) scale(0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: translateY(-100vh) scale(1);
+    opacity: 0;
+  }
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #FFD700;
+  border-radius: 50%;
+  animation: float-up linear infinite;
+  pointer-events: none;
+}
+
+/* Pulse glow for CTA */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.8), 0 0 60px rgba(0, 212, 255, 0.3);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+::selection {
+  background-color: #FFD700;
+  color: #000000;
+}
+
+/* Marquee for trust strip */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }

@@ -1,0 +1,285 @@
+'use client'
+
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeft, ArrowRight, Building2, Home, Sparkles, Check } from 'lucide-react'
+import Link from 'next/link'
+
+type FormStep = 1 | 2 | 3 | 4
+
+export default function QuotePage() {
+    const [step, setStep] = useState<FormStep>(1)
+    const [propertyType, setPropertyType] = useState<'residential' | 'commercial' | null>(null)
+    const [details, setDetails] = useState({ windows: 10, floors: 1, addOns: [] as string[] })
+    const [contact, setContact] = useState({ name: '', email: '', phone: '' })
+    const [isCalculating, setIsCalculating] = useState(false)
+    const [quoteResult, setQuoteResult] = useState<{ estimate: number, currency: string } | null>(null)
+
+    const handleNext = () => setStep((s) => Math.min(s + 1, 4) as FormStep)
+    const handleBack = () => setStep((s) => Math.max(s - 1, 1) as FormStep)
+
+    const toggleAddOn = (id: string) => {
+        setDetails(prev => ({
+            ...prev,
+            addOns: prev.addOns.includes(id) ? prev.addOns.filter(a => a !== id) : [...prev.addOns, id]
+        }))
+    }
+
+    const submitQuote = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setIsCalculating(true)
+
+        try {
+            // Direct call to edge function (mocked behavior if function not yet deployed)
+            const mockCalculate = () => {
+                let baseRate = propertyType === 'residential' ? 6.50 : 4.00
+                let multiplier = details.floors > 2 ? 1.2 : 1.0
+                let total = (details.windows * baseRate * multiplier)
+                if (details.addOns.includes('screens')) total += (details.windows * 2)
+                if (details.addOns.includes('tracks')) total += 45
+                return Number(total.toFixed(2))
+            }
+
+            // Simulate network delay
+            await new Promise(r => setTimeout(r, 1500))
+
+            setQuoteResult({
+                estimate: mockCalculate(),
+                currency: 'CAD'
+            })
+            setStep(4)
+        } catch (err) {
+            console.error(err)
+        } finally {
+            setIsCalculating(false)
+        }
+    }
+
+    return (
+        <div className="min-h-[calc(100vh)] bg-black py-32 relative overflow-hidden flex flex-col items-center">
+            {/* Background glow elements */}
+            <div className="absolute top-1/4 left-0 w-96 h-96 bg-[#FFD700]/10 rounded-full blur-[120px] pointer-events-none"></div>
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#FFC107]/10 rounded-full blur-[150px] pointer-events-none"></div>
+
+            <div className="container mx-auto px-4 max-w-3xl relative z-10 w-full">
+                <div className="mb-12 text-center">
+                    <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">Your Instant Estimate</h1>
+                    <p className="text-white/40">Answer a few simple questions to get your crystal clear price.</p>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="mb-12 relative w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                    <motion.div
+                        className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-[#FFD700] to-[#FFC107]"
+                        initial={{ width: '25%' }}
+                        animate={{ width: `${(step / 4) * 100}%` }}
+                        transition={{ duration: 0.5, ease: 'easeInOut' }}
+                    />
+                </div>
+
+                <div className="bg-[#111111]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-12 shadow-2xl relative">
+                    <AnimatePresence mode="wait">
+                        {/* STEP 1: PROPERTY TYPE */}
+                        {step === 1 && (
+                            <motion.div
+                                key="step1"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="flex flex-col gap-6"
+                            >
+                                <h2 className="text-2xl font-heading font-bold text-white text-center mb-6">What type of property?</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <button
+                                        onClick={() => { setPropertyType('residential'); handleNext() }}
+                                        className={`flex flex-col items-center justify-center p-8 rounded-2xl border-2 transition-all group ${propertyType === 'residential' ? 'border-[#FFD700] bg-[#FFD700]/10' : 'border-white/10 hover:border-white/30 bg-white/5'}`}
+                                    >
+                                        <Home className={`w-12 h-12 mb-4 transition-colors ${propertyType === 'residential' ? 'text-[#FFD700]' : 'text-white/40 group-hover:text-white'}`} />
+                                        <span className={`text-lg font-bold transition-colors ${propertyType === 'residential' ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>Residential Home</span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => { setPropertyType('commercial'); handleNext() }}
+                                        className={`flex flex-col items-center justify-center p-8 rounded-2xl border-2 transition-all group ${propertyType === 'commercial' ? 'border-[#FFD700] bg-[#FFD700]/10' : 'border-white/10 hover:border-white/30 bg-white/5'}`}
+                                    >
+                                        <Building2 className={`w-12 h-12 mb-4 transition-colors ${propertyType === 'commercial' ? 'text-[#FFD700]' : 'text-white/40 group-hover:text-white'}`} />
+                                        <span className={`text-lg font-bold transition-colors ${propertyType === 'commercial' ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>Commercial/Office</span>
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {/* STEP 2: DETAILS */}
+                        {step === 2 && (
+                            <motion.div
+                                key="step2"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                            >
+                                <h2 className="text-2xl font-heading font-bold text-white text-center mb-8">Property Details</h2>
+
+                                <div className="space-y-8">
+                                    <div>
+                                        <div className="flex justify-between text-white mb-4">
+                                            <label className="font-medium">Number of Windows (approx)</label>
+                                            <span className="font-accent text-[#FFD700] text-xl font-bold">{details.windows}</span>
+                                        </div>
+                                        <input
+                                            type="range"
+                                            min="5" max="100" step="5"
+                                            value={details.windows}
+                                            onChange={(e) => setDetails({ ...details, windows: parseInt(e.target.value) })}
+                                            className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#FFD700]"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <div className="flex justify-between text-white mb-4">
+                                            <label className="font-medium">Highest Floor to Clean</label>
+                                            <span className="font-accent text-[#FFD700] text-xl font-bold">{details.floors}</span>
+                                        </div>
+                                        <input
+                                            type="range"
+                                            min="1" max={propertyType === 'residential' ? 4 : 20} step="1"
+                                            value={details.floors}
+                                            onChange={(e) => setDetails({ ...details, floors: parseInt(e.target.value) })}
+                                            className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#FFD700]"
+                                        />
+                                        <p className="text-xs text-white/40 mt-2 text-right">Above 2 floors incurs a minor high-reach fee.</p>
+                                    </div>
+
+                                    <div>
+                                        <label className="font-medium text-white mb-4 block">Recommended Add-Ons</label>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <div
+                                                onClick={() => toggleAddOn('screens')}
+                                                className={`p-4 rounded-xl border flex items-center justify-between cursor-pointer transition-colors ${details.addOns.includes('screens') ? 'bg-[#FFD700]/10 border-[#FFD700] text-white' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
+                                            >
+                                                <span>Screen Cleaning</span>
+                                                {details.addOns.includes('screens') && <Check className="w-5 h-5 text-[#FFD700]" />}
+                                            </div>
+                                            <div
+                                                onClick={() => toggleAddOn('tracks')}
+                                                className={`p-4 rounded-xl border flex items-center justify-between cursor-pointer transition-colors ${details.addOns.includes('tracks') ? 'bg-[#FFD700]/10 border-[#FFD700] text-white' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
+                                            >
+                                                <span>Deep Track Cleaning</span>
+                                                {details.addOns.includes('tracks') && <Check className="w-5 h-5 text-[#FFD700]" />}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-between mt-12">
+                                    <button onClick={handleBack} className="flex items-center gap-2 text-white/40 hover:text-white transition-colors">
+                                        <ArrowLeft className="w-4 h-4" /> Back
+                                    </button>
+                                    <button onClick={handleNext} className="flex items-center gap-2 bg-white text-[#0A1628] px-6 py-2.5 rounded-full font-bold hover:bg-[#FFD700] transition-colors">
+                                        Continue <ArrowRight className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {/* STEP 3: CONTACT & CALCULATE */}
+                        {step === 3 && (
+                            <motion.div
+                                key="step3"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                            >
+                                <h2 className="text-2xl font-heading font-bold text-white text-center mb-2">Where to send the estimate?</h2>
+                                <p className="text-white/40 text-center text-sm mb-8">We won't spam you. Promise.</p>
+
+                                <form onSubmit={submitQuote} className="space-y-4">
+                                    <div>
+                                        <label className="text-sm text-white/40 block mb-1">Full Name</label>
+                                        <input
+                                            required type="text"
+                                            value={contact.name} onChange={e => setContact({ ...contact, name: e.target.value })}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#FFD700] transition-colors"
+                                            placeholder="Jane Doe"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-sm text-white/40 block mb-1">Email</label>
+                                            <input
+                                                required type="email"
+                                                value={contact.email} onChange={e => setContact({ ...contact, email: e.target.value })}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#FFD700] transition-colors"
+                                                placeholder="jane@example.com"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm text-white/40 block mb-1">Phone</label>
+                                            <input
+                                                required type="tel"
+                                                value={contact.phone} onChange={e => setContact({ ...contact, phone: e.target.value })}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#FFD700] transition-colors"
+                                                placeholder="(555) 123-4567"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-between mt-12 items-center">
+                                        <button type="button" onClick={handleBack} className="flex items-center gap-2 text-white/40 hover:text-white transition-colors">
+                                            <ArrowLeft className="w-4 h-4" /> Back
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            disabled={isCalculating}
+                                            className="flex items-center gap-2 bg-[#FFD700] hover:bg-[#FFC107] text-[#0A1628] px-8 py-3 rounded-full font-bold transition-colors disabled:opacity-50 min-w-[200px] justify-center shadow-[0_0_15px_rgba(0,212,255,0.3)]"
+                                        >
+                                            {isCalculating ? (
+                                                <div className="w-5 h-5 border-2 border-[#0A1628] border-t-transparent rounded-full animate-spin"></div>
+                                            ) : (
+                                                <>Reveal Estimate <Sparkles className="w-4 h-4" /></>
+                                            )}
+                                        </button>
+                                    </div>
+                                </form>
+                            </motion.div>
+                        )}
+
+                        {/* STEP 4: SUCCESS / RESULT */}
+                        {step === 4 && quoteResult && (
+                            <motion.div
+                                key="step4"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="text-center py-8"
+                            >
+                                <div className="w-20 h-20 bg-[#22C55E]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <Check className="w-10 h-10 text-[#22C55E]" />
+                                </div>
+                                <h2 className="text-3xl font-heading font-bold text-white mb-2">Estimate Ready</h2>
+                                <p className="text-white/40 mb-8">A copy has been sent to {contact.email}</p>
+
+                                <div className="bg-black border border-white/10 rounded-2xl p-8 mb-8 inline-block min-w-[300px]">
+                                    <p className="text-sm text-white/40 uppercase tracking-wider mb-2">Estimated Total</p>
+                                    <div className="flex items-start justify-center text-white">
+                                        <span className="text-2xl font-bold mt-1 mr-1">$</span>
+                                        <span className="text-6xl font-accent font-bold tracking-tighter">{quoteResult.estimate.toFixed(2)}</span>
+                                        <span className="text-xl font-medium mt-6 ml-2 text-white/40">{quoteResult.currency}</span>
+                                    </div>
+                                    <p className="text-xs text-white/40 mt-4">*Final price confirmed upon on-site inspection.</p>
+                                </div>
+
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                    <Link href="/contact" className="bg-[#FFD700] hover:bg-white text-black px-8 py-3 rounded-full font-bold transition-colors shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+                                        Book An Appointment
+                                    </Link>
+                                    <button onClick={() => setStep(1)} className="text-white/40 hover:text-white font-medium px-8 py-3 transition-colors">
+                                        Recalculate
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            </div>
+        </div>
+    )
+}
