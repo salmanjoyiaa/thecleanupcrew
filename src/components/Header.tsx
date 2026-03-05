@@ -20,6 +20,9 @@ export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const pathname = usePathname()
 
+    // Determine if the header is over a dark background (i.e. top of home page)
+    const isDarkBackground = pathname === '/' && !isScrolled
+
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 20)
@@ -66,7 +69,7 @@ export default function Header() {
                         alt="The Clean Up Crew - Canada's Premium Cleaning Service"
                         width={200}
                         height={60}
-                        className="h-9 md:h-12 w-auto drop-shadow-[0_0_20px_rgba(0,212,255,0.3)] transition-all group-hover:drop-shadow-[0_0_30px_rgba(0,212,255,0.5)]"
+                        className={`h-9 md:h-12 w-auto transition-all ${isDarkBackground ? 'brightness-100 invert grayscale' : 'drop-shadow-[0_0_20px_rgba(0,212,255,0.3)] group-hover:drop-shadow-[0_0_30px_rgba(0,212,255,0.5)]'}`}
                         priority
                     />
                 </Link>
@@ -75,11 +78,14 @@ export default function Header() {
                 <nav className="hidden lg:flex flex-1 justify-center items-center space-x-10">
                     {navLinks.map((link) => {
                         const isActive = pathname === link.href || (pathname.startsWith(link.href) && link.href !== '/')
+                        const textClass = isDarkBackground
+                            ? (isActive ? 'text-white' : 'text-white/70 hover:text-white')
+                            : (isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground')
                         return (
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className={`relative text-sm font-semibold uppercase tracking-widest transition-colors py-2 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                                className={`relative text-sm font-semibold uppercase tracking-widest transition-colors py-2 ${textClass}`}
                             >
                                 {link.name}
                                 {isActive && (
@@ -96,7 +102,7 @@ export default function Header() {
 
                 {/* Desktop CTAs */}
                 <div className="hidden lg:flex items-center gap-5">
-                    <a href="tel:440985298" className="flex items-center gap-2 text-sm font-bold text-foreground/80 hover:text-foreground transition-colors">
+                    <a href="tel:440985298" className={`flex items-center gap-2 text-sm font-bold transition-colors ${isDarkBackground ? 'text-white hover:text-[#FFD700]' : 'text-foreground/80 hover:text-foreground'}`}>
                         <div className="w-8 h-8 rounded-full bg-[#FFD700]/10 flex items-center justify-center">
                             <PhoneCall className="w-3.5 h-3.5 text-[#FFD700]" />
                         </div>
@@ -104,7 +110,7 @@ export default function Header() {
                     </a>
                     <Link
                         href="/login"
-                        className="text-sm font-bold uppercase tracking-wider text-foreground/80 hover:text-foreground transition-colors"
+                        className={`text-sm font-bold uppercase tracking-wider transition-colors ${isDarkBackground ? 'text-white hover:text-[#FFD700]' : 'text-foreground/80 hover:text-foreground'}`}
                     >
                         Sign In
                     </Link>
@@ -121,7 +127,7 @@ export default function Header() {
 
                 {/* Mobile Toggle */}
                 <button
-                    className="lg:hidden text-foreground p-2.5 relative z-50 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                    className={`lg:hidden p-2.5 relative z-50 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors ${isDarkBackground && !mobileMenuOpen ? 'text-white' : 'text-foreground'}`}
                     onClick={toggleMenu}
                     aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
                 >
