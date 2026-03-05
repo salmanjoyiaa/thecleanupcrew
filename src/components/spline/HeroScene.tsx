@@ -1,243 +1,184 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function HeroScene() {
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const containerRef = useRef<HTMLDivElement>(null)
     const scrollRef = useRef(0)
+    const [reducedMotion, setReducedMotion] = useState(false)
 
-    // Track scroll position for parallax
-    const handleScroll = useCallback(() => {
-        scrollRef.current = window.scrollY
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+        setReducedMotion(mediaQuery.matches)
+
+        const onChange = (event: MediaQueryListEvent) => setReducedMotion(event.matches)
+        mediaQuery.addEventListener('change', onChange)
+
+        return () => mediaQuery.removeEventListener('change', onChange)
     }, [])
 
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll, { passive: true })
-        return () => window.removeEventListener('scroll', handleScroll)
-    }, [handleScroll])
+        if (reducedMotion) {
+            return
+        }
 
-    useEffect(() => {
         const canvas = canvasRef.current
         if (!canvas) return
         const ctx = canvas.getContext('2d')
         if (!ctx) return
 
         let animationId: number
-        let mouseX = 0
-        let mouseY = 0
+        let width = 0
+        let height = 0
+        let dpr = 1
+        let pointerX = 0
+        let pointerY = 0
 
-        const resize = () => {
-            canvas.width = window.innerWidth
-            canvas.height = window.innerHeight
-        }
-        resize()
-        window.addEventListener('resize', resize)
-
-        const handleMouse = (e: MouseEvent) => {
-            mouseX = e.clientX
-            mouseY = e.clientY
-        }
-        window.addEventListener('mousemove', handleMouse)
-
-        // Handle touch for mobile
-        const handleTouch = (e: TouchEvent) => {
-            if (e.touches.length > 0) {
-                mouseX = e.touches[0].clientX
-                mouseY = e.touches[0].clientY
-            }
-        }
-        window.addEventListener('touchmove', handleTouch, { passive: true })
-
-        // === MULTI-LAYER PARTICLE SYSTEM ===
-        // 3 depth layers for parallax: far (slow), mid, near (fast)
-        interface Particle {
-            x: number; y: number; baseX: number; baseY: number
-            vx: number; vy: number; radius: number; opacity: number
-            layer: number // 0=far, 1=mid, 2=near
-            parallaxFactor: number
+        type Particle = {
+            x: number
+            y: number
+            vx: number
+            vy: number
+            radius: number
+            alpha: number
         }
 
         const particles: Particle[] = []
-        const layerConfig = [
-            { count: 25, radiusMin: 0.3, radiusMax: 0.8, opacityMin: 0.05, opacityMax: 0.15, speedFactor: 0.15, parallaxFactor: 0.3 },  // far - tiny, dim, slow
-            { count: 25, radiusMin: 0.5, radiusMax: 1.2, opacityMin: 0.1, opacityMax: 0.3, speedFactor: 0.25, parallaxFactor: 0.8 },   // mid
-            { count: 15, radiusMin: 1.0, radiusMax: 2.0, opacityMin: 0.2, opacityMax: 0.5, speedFactor: 0.4, parallaxFactor: 1.5 },    // near - larger, brighter, faster
-        ]
 
-        layerConfig.forEach((config, layerIndex) => {
-            for (let i = 0; i < config.count; i++) {
-                const x = Math.random() * canvas.width
-                const y = Math.random() * canvas.height
+        const createParticles = () => {
+            particles.length = 0
+            const count = Math.min(90, Math.max(45, Math.floor(width / 24)))
+            for (let i = 0; i < count; i += 1) {
                 particles.push({
-                    x, y, baseX: x, baseY: y,
-                    vx: (Math.random() - 0.5) * config.speedFactor,
-                    vy: (Math.random() - 0.5) * config.speedFactor,
-                    radius: Math.random() * (config.radiusMax - config.radiusMin) + config.radiusMin,
-                    opacity: Math.random() * (config.opacityMax - config.opacityMin) + config.opacityMin,
-                    layer: layerIndex,
-                    parallaxFactor: config.parallaxFactor,
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.18,
+                    vy: (Math.random() - 0.5) * 0.18,
+                    radius: Math.random() * 2.2 + 0.5,
+                    alpha: Math.random() * 0.35 + 0.08,
                 })
             }
-        })
+        }
 
-        // Floating light streaks (like lens flares)
-        const streaks = Array.from({ length: 4 }, () => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            length: Math.random() * 80 + 40,
-            angle: Math.random() * Math.PI * 2,
-            speed: (Math.random() - 0.5) * 0.3,
-            opacity: Math.random() * 0.04 + 0.01,
-            parallaxFactor: 0.6 + Math.random() * 0.8,
-        }))
+        const resize = () => {
+            dpr = window.devicePixelRatio || 1
+            width = window.innerWidth
+            height = window.innerHeight
+
+            canvas.width = Math.floor(width * dpr)
+            canvas.height = Math.floor(height * dpr)
+            canvas.style.width = `${width}px`
+            canvas.style.height = `${height}px`
+
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+            createParticles()
+        }
+
+        const onPointerMove = (event: MouseEvent) => {
+            pointerX = event.clientX
+            pointerY = event.clientY
+        }
+
+        const onTouchMove = (event: TouchEvent) => {
+            if (event.touches.length > 0) {
+                pointerX = event.touches[0].clientX
+                pointerY = event.touches[0].clientY
+            }
+        }
+
+        const onScroll = () => {
+            scrollRef.current = window.scrollY
+        }
+
+        resize()
+        window.addEventListener('resize', resize)
+        window.addEventListener('mousemove', onPointerMove, { passive: true })
+        window.addEventListener('touchmove', onTouchMove, { passive: true })
+        window.addEventListener('scroll', onScroll, { passive: true })
 
         let time = 0
 
+        const drawAurora = (t: number) => {
+            const bandA = ctx.createLinearGradient(0, 0, width, height)
+            bandA.addColorStop(0, 'rgba(255, 215, 0, 0.12)')
+            bandA.addColorStop(0.5, 'rgba(173, 255, 219, 0.1)')
+            bandA.addColorStop(1, 'rgba(255, 255, 255, 0)')
+
+            const waveY = Math.sin(t * 0.65) * 60
+            ctx.save()
+            ctx.translate(0, waveY)
+            ctx.fillStyle = bandA
+            ctx.beginPath()
+            ctx.moveTo(-60, height * 0.18)
+            ctx.bezierCurveTo(width * 0.2, height * 0.05, width * 0.5, height * 0.35, width + 60, height * 0.14)
+            ctx.lineTo(width + 60, height * 0.45)
+            ctx.bezierCurveTo(width * 0.55, height * 0.58, width * 0.25, height * 0.25, -60, height * 0.5)
+            ctx.closePath()
+            ctx.fill()
+            ctx.restore()
+
+            const bandB = ctx.createLinearGradient(width, 0, 0, height)
+            bandB.addColorStop(0, 'rgba(255, 204, 0, 0.11)')
+            bandB.addColorStop(0.6, 'rgba(0, 212, 255, 0.08)')
+            bandB.addColorStop(1, 'rgba(255, 255, 255, 0)')
+
+            const drift = Math.cos(t * 0.45) * 45
+            ctx.save()
+            ctx.translate(0, drift)
+            ctx.fillStyle = bandB
+            ctx.beginPath()
+            ctx.moveTo(-80, height * 0.52)
+            ctx.bezierCurveTo(width * 0.28, height * 0.35, width * 0.62, height * 0.72, width + 80, height * 0.5)
+            ctx.lineTo(width + 80, height * 0.82)
+            ctx.bezierCurveTo(width * 0.7, height * 0.93, width * 0.3, height * 0.55, -80, height * 0.88)
+            ctx.closePath()
+            ctx.fill()
+            ctx.restore()
+        }
+
         const animate = () => {
-            if (!ctx || !canvas) return
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            time += 0.003
+            time += 0.008
+            const scrollShift = Math.min(scrollRef.current * 0.2, 180)
 
-            const scroll = scrollRef.current
-            const maxScroll = canvas.height // normalize: 0-1 over one viewport
+            ctx.clearRect(0, 0, width, height)
+            ctx.fillStyle = '#F8F6F0'
+            ctx.fillRect(0, 0, width, height)
 
-            // === AMBIENT NEBULA ORBS (parallax-aware) ===
-            const orbs = [
-                { x: 0.2, y: 0.3, r: 280, opacity: 0.035, parallax: 0.5 },
-                { x: 0.8, y: 0.6, r: 220, opacity: 0.025, parallax: 0.8 },
-                { x: 0.5, y: 0.15, r: 320, opacity: 0.02, parallax: 0.3 },
-                { x: 0.7, y: 0.8, r: 180, opacity: 0.02, parallax: 1.0 },
-            ]
-            orbs.forEach((orb, i) => {
-                const parallaxOffset = scroll * orb.parallax
-                const ox = orb.x * canvas.width + Math.sin(time + i * 1.8) * 60
-                const oy = orb.y * canvas.height + Math.cos(time * 0.7 + i * 1.8) * 50 - parallaxOffset
-                const grad = ctx.createRadialGradient(ox, oy, 0, ox, oy, orb.r)
-                grad.addColorStop(0, `rgba(255, 215, 0, ${orb.opacity})`)
-                grad.addColorStop(0.5, `rgba(255, 190, 0, ${orb.opacity * 0.3})`)
-                grad.addColorStop(1, 'transparent')
-                ctx.fillStyle = grad
-                ctx.beginPath()
-                ctx.arc(ox, oy, orb.r, 0, Math.PI * 2)
-                ctx.fill()
-            })
+            drawAurora(time)
 
-            // === FLOATING LIGHT STREAKS ===
-            streaks.forEach(s => {
-                const parallaxOffset = scroll * s.parallaxFactor
-                s.angle += s.speed * 0.01
-                const sx = s.x + Math.sin(time * 0.5 + s.angle) * 100
-                const sy = s.y + Math.cos(time * 0.3 + s.angle) * 60 - parallaxOffset
+            const spotlight = ctx.createRadialGradient(
+                width * 0.5 + (pointerX - width * 0.5) * 0.05,
+                height * 0.45 + (pointerY - height * 0.45) * 0.05 - scrollShift,
+                0,
+                width * 0.5,
+                height * 0.45,
+                Math.max(width, height) * 0.7
+            )
+            spotlight.addColorStop(0, 'rgba(255, 255, 255, 0.45)')
+            spotlight.addColorStop(1, 'rgba(248, 246, 240, 0)')
+            ctx.fillStyle = spotlight
+            ctx.fillRect(0, 0, width, height)
 
-                ctx.save()
-                ctx.translate(sx, sy)
-                ctx.rotate(s.angle + time * 0.2)
-
-                const streakGrad = ctx.createLinearGradient(-s.length / 2, 0, s.length / 2, 0)
-                streakGrad.addColorStop(0, 'transparent')
-                streakGrad.addColorStop(0.5, `rgba(255, 215, 0, ${s.opacity})`)
-                streakGrad.addColorStop(1, 'transparent')
-                ctx.strokeStyle = streakGrad
-                ctx.lineWidth = 1
-                ctx.beginPath()
-                ctx.moveTo(-s.length / 2, 0)
-                ctx.lineTo(s.length / 2, 0)
-                ctx.stroke()
-
-                ctx.restore()
-            })
-
-            // === PARTICLES WITH PARALLAX OFFSET ===
-            particles.forEach(p => {
+            for (let i = 0; i < particles.length; i += 1) {
+                const p = particles[i]
                 p.x += p.vx
                 p.y += p.vy
 
-                // Parallax offset based on scroll
-                const parallaxOffset = scroll * p.parallaxFactor
+                if (p.x < -20) p.x = width + 20
+                if (p.x > width + 20) p.x = -20
+                if (p.y < -20) p.y = height + 20
+                if (p.y > height + 20) p.y = -20
 
-                // Gentle mouse interaction (stronger for near particles)
-                const mouseFactor = 0.002 + p.layer * 0.002
-                const dx = mouseX - p.x
-                const dy = mouseY - (p.y - parallaxOffset)
-                const dist = Math.sqrt(dx * dx + dy * dy)
-                if (dist < 250) {
-                    p.x -= dx * mouseFactor
-                    p.y -= dy * mouseFactor
-                }
+                const py = p.y - scrollShift * 0.35
+                const dx = pointerX - p.x
+                const dy = pointerY - py
+                const dist = Math.hypot(dx, dy)
+                const glowBoost = dist < 180 ? (1 - dist / 180) * 0.4 : 0
 
-                // Wrap around
-                if (p.x < -10) p.x = canvas.width + 10
-                if (p.x > canvas.width + 10) p.x = -10
-                if (p.y < -10) p.y = canvas.height + 10
-                if (p.y > canvas.height + 10) p.y = -10
-
-                // Draw particle at parallax-adjusted position
-                const drawY = p.y - parallaxOffset
-
-                // Only draw if visible
-                if (drawY > -20 && drawY < canvas.height + 20) {
-                    ctx.beginPath()
-                    ctx.arc(p.x, drawY, p.radius, 0, Math.PI * 2)
-                    ctx.fillStyle = `rgba(255, 215, 0, ${p.opacity})`
-                    ctx.fill()
-
-                    // Subtle glow for larger near particles
-                    if (p.layer === 2 && p.radius > 1.5) {
-                        const glow = ctx.createRadialGradient(p.x, drawY, 0, p.x, drawY, p.radius * 4)
-                        glow.addColorStop(0, `rgba(255, 215, 0, ${p.opacity * 0.3})`)
-                        glow.addColorStop(1, 'transparent')
-                        ctx.fillStyle = glow
-                        ctx.beginPath()
-                        ctx.arc(p.x, drawY, p.radius * 4, 0, Math.PI * 2)
-                        ctx.fill()
-                    }
-                }
-            })
-
-            // === DEPTH-AWARE CONNECTIONS (only same-layer particles) ===
-            for (let layer = 0; layer < 3; layer++) {
-                const layerParticles = particles.filter(p => p.layer === layer)
-                const maxDist = 100 + layer * 30 // near particles connect at longer range
-                const lineOpacity = 0.03 + layer * 0.02
-
-                for (let i = 0; i < layerParticles.length; i++) {
-                    const parallaxOffA = scroll * layerParticles[i].parallaxFactor
-                    for (let j = i + 1; j < layerParticles.length; j++) {
-                        const parallaxOffB = scroll * layerParticles[j].parallaxFactor
-                        const dx = layerParticles[i].x - layerParticles[j].x
-                        const dy = (layerParticles[i].y - parallaxOffA) - (layerParticles[j].y - parallaxOffB)
-                        const dist = Math.sqrt(dx * dx + dy * dy)
-                        if (dist < maxDist) {
-                            ctx.beginPath()
-                            ctx.strokeStyle = `rgba(255, 215, 0, ${lineOpacity * (1 - dist / maxDist)})`
-                            ctx.lineWidth = layer === 2 ? 0.8 : 0.4
-                            ctx.moveTo(layerParticles[i].x, layerParticles[i].y - parallaxOffA)
-                            ctx.lineTo(layerParticles[j].x, layerParticles[j].y - parallaxOffB)
-                            ctx.stroke()
-                        }
-                    }
-                }
-            }
-
-            // === CENTRAL PULSING CORE ===
-            const cx = canvas.width / 2
-            const cy = canvas.height / 2 - scroll * 0.6
-            const pulseSize = 180 + Math.sin(time * 1.5) * 40
-            const centerGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, pulseSize)
-            centerGlow.addColorStop(0, 'rgba(255, 215, 0, 0.04)')
-            centerGlow.addColorStop(0.4, 'rgba(255, 200, 0, 0.015)')
-            centerGlow.addColorStop(1, 'transparent')
-            ctx.fillStyle = centerGlow
-            ctx.beginPath()
-            ctx.arc(cx, cy, pulseSize, 0, Math.PI * 2)
-            ctx.fill()
-
-            // === SCROLL-FADING VIGNETTE ===
-            const fadeProgress = Math.min(scroll / maxScroll, 1)
-            if (fadeProgress > 0) {
-                ctx.fillStyle = `rgba(0, 0, 0, ${fadeProgress * 0.4})`
-                ctx.fillRect(0, 0, canvas.width, canvas.height)
+                ctx.beginPath()
+                ctx.arc(p.x, py, p.radius + glowBoost, 0, Math.PI * 2)
+                ctx.fillStyle = `rgba(255, 199, 0, ${p.alpha + glowBoost * 0.4})`
+                ctx.fill()
             }
 
             animationId = requestAnimationFrame(animate)
@@ -248,14 +189,16 @@ export default function HeroScene() {
         return () => {
             cancelAnimationFrame(animationId)
             window.removeEventListener('resize', resize)
-            window.removeEventListener('mousemove', handleMouse)
-            window.removeEventListener('touchmove', handleTouch)
+            window.removeEventListener('mousemove', onPointerMove)
+            window.removeEventListener('touchmove', onTouchMove)
+            window.removeEventListener('scroll', onScroll)
         }
-    }, [])
+    }, [reducedMotion])
 
     return (
-        <div ref={containerRef} className="absolute inset-0 w-full h-full bg-[#F8F6F0]">
-            <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+        <div className="absolute inset-0 h-full w-full bg-[#F8F6F0]">
+            {!reducedMotion && <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(255,215,0,0.12),transparent_55%)]" />
         </div>
     )
 }
