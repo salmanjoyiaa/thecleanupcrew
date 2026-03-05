@@ -1,51 +1,50 @@
 'use client'
 
-import HeroScene from '@/components/spline/HeroScene'
 import { RevealOnScroll } from '@/components/ui/RevealOnScroll'
 import { ParallaxLayer } from '@/components/ui/ParallaxLayer'
 import { ArrowRight, Droplets, Building2, Waves, Sparkles, Star, Shield, Leaf, Clock, CheckCircle2 } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Home() {
   return (
     <>
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* HERO — Full-screen, bold, KingKong-inspired + Parallax */}
+      {/* HERO — Photorealistic Background + Dark Overlay */}
       {/* ═══════════════════════════════════════════════════════ */}
-      <section className="relative min-h-screen w-full overflow-hidden bg-[#F8F6F0]">
+      <section className="relative min-h-screen w-full overflow-hidden bg-black">
+        {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <HeroScene />
+          <Image
+            src="/images/hero-bg.webp"
+            alt="Professional exterior cleaning"
+            fill
+            priority
+            className="object-cover object-center"
+            quality={100}
+          />
+          {/* Dark Contrast Overlay for readability */}
+          <div className="absolute inset-0 bg-black/50 sm:bg-black/60 z-10" />
+          {/* Gradient to smooth out the bottom transition into the next section */}
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#F8F6F0] to-transparent z-10" />
         </div>
 
-        <ParallaxLayer speed={-0.12} className="absolute inset-0 z-[8] pointer-events-none">
-          <div className="absolute top-[12%] left-[8%] h-44 w-44 rounded-full bg-[#FFD700]/12 blur-3xl" />
-          <div className="absolute bottom-[18%] right-[12%] h-56 w-56 rounded-full bg-emerald-300/10 blur-3xl" />
-        </ParallaxLayer>
-
-        <ParallaxLayer speed={-0.28} className="absolute inset-0 z-[9] pointer-events-none">
-          <div className="absolute top-[24%] right-[20%] h-20 w-20 rounded-full border border-[#FFD700]/40 bg-white/40 backdrop-blur-md" />
-          <div className="absolute bottom-[22%] left-[18%] h-16 w-16 rounded-full border border-black/10 bg-white/70" />
-        </ParallaxLayer>
-
-        {/* Hero readability overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#F8F6F0]/20 via-[#F8F6F0]/5 to-[#F8F6F0]/35 z-10 pointer-events-none" />
-
-        <div className="relative z-20 container mx-auto px-5 md:px-4 min-h-screen flex flex-col justify-center items-center text-center pt-20 md:pt-24 pb-8">
+        <div className="relative z-20 container mx-auto px-5 md:px-4 min-h-screen flex flex-col justify-center items-center text-center pt-24 pb-16">
           <ParallaxLayer speed={-0.25} fadeOut className="flex flex-col items-center">
             <RevealOnScroll delay={0.2}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full bg-white/80 border border-black/10 backdrop-blur-md mb-6 md:mb-8">
-                <span className="flex h-2 w-2 rounded-full bg-[#FFD700] animate-pulse"></span>
-                <span className="text-xs md:text-sm font-semibold text-[#FFD700] uppercase tracking-widest">Canada&apos;s #1 Rated</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full bg-black/40 border border-white/20 backdrop-blur-md mb-6 md:mb-8 shadow-xl">
+                <span className="flex h-2 w-2 rounded-full bg-[#FFD700] animate-pulse shadow-[0_0_8px_#FFD700]"></span>
+                <span className="text-xs md:text-sm font-semibold text-white uppercase tracking-widest drop-shadow-md">Canada&apos;s #1 Rated</span>
               </div>
             </RevealOnScroll>
           </ParallaxLayer>
 
           <ParallaxLayer speed={-0.45} fadeOut className="flex flex-col items-center">
             <RevealOnScroll delay={0.4}>
-              <h1 className="font-heading font-bold text-[2rem] sm:text-4xl md:text-5xl lg:text-7xl xl:text-[5.5rem] tracking-tight text-[#1A1A1A] mb-5 md:mb-6 leading-[1.1] md:leading-[1.05] px-2 sm:px-0">
+              <h1 className="font-heading font-bold text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[6rem] tracking-tight text-white mb-5 md:mb-6 leading-[1.1] md:leading-[1.05] px-2 sm:px-0 drop-shadow-lg">
                 We Make Your Property
                 <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] via-[#FFC107] to-[#FFD700] animate-gradient-text">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] via-[#FFE033] to-[#FFD700] drop-shadow-xl animate-gradient-text filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
                   Absolutely Spotless.
                 </span>
               </h1>
@@ -54,18 +53,18 @@ export default function Home() {
 
           <ParallaxLayer speed={-0.65} fadeOut className="flex flex-col items-center w-full">
             <RevealOnScroll delay={0.6}>
-              <p className="max-w-2xl mx-auto text-base md:text-lg lg:text-xl text-muted-foreground mb-8 md:mb-10 leading-relaxed px-2 sm:px-0">
+              <p className="max-w-2xl mx-auto text-base md:text-lg lg:text-xl text-white/90 mb-8 md:mb-10 leading-relaxed px-2 sm:px-0 drop-shadow-md font-medium">
                 Professional window cleaning, eavestrough maintenance, and commercial exteriors for Canadian homeowners and businesses. Eco-friendly. Fully insured. Satisfaction guaranteed.
               </p>
             </RevealOnScroll>
 
             <RevealOnScroll delay={0.8}>
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 items-center justify-center w-full sm:w-auto px-2 sm:px-0">
-                <Link href="/quote" className="group relative inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-[#FFD700] hover:bg-white text-black font-bold rounded-full transition-all hover:scale-105 animate-pulse-glow uppercase tracking-wider text-sm">
+              <div className="flex flex-col sm:flex-row gap-4 md:gap-5 items-center justify-center w-full sm:w-auto px-2 sm:px-0">
+                <Link href="/quote" className="group relative inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-[#FFD700] hover:bg-white text-black font-bold rounded-full transition-all hover:scale-105 animate-pulse-glow uppercase tracking-wider text-sm shadow-[0_0_20px_rgba(255,215,0,0.4)]">
                   Get Your Free Quote
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link href="/services" className="inline-flex items-center justify-center w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 text-foreground/80 font-semibold hover:text-foreground transition-colors rounded-full border border-black/10 hover:border-black/30 uppercase tracking-wider text-sm">
+                <Link href="/services" className="inline-flex items-center justify-center w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 text-white font-semibold hover:bg-white/10 hover:text-white transition-colors rounded-full border border-white/30 hover:border-white/60 uppercase tracking-wider text-sm backdrop-blur-sm shadow-lg">
                   Our Services
                 </Link>
               </div>
@@ -75,21 +74,21 @@ export default function Home() {
           {/* Trust bar — fastest parallax */}
           <ParallaxLayer speed={-0.9} fadeOut className="w-full">
             <RevealOnScroll delay={1.0}>
-              <div className="mt-10 md:mt-16 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-4 sm:gap-8 text-muted-foreground text-xs sm:text-sm">
+              <div className="mt-12 md:mt-16 grid grid-cols-2 lg:flex lg:flex-wrap items-center justify-center gap-4 sm:gap-8 text-white/90 text-sm sm:text-base font-medium drop-shadow-md">
                 <div className="flex items-center justify-center gap-2">
-                  <Shield className="w-4 h-4 text-[#22C55E] shrink-0" />
+                  <Shield className="w-5 h-5 text-[#22C55E] shrink-0 drop-shadow-sm" />
                   <span>WSIB Compliant</span>
                 </div>
                 <div className="flex items-center justify-center gap-2">
-                  <Leaf className="w-4 h-4 text-[#22C55E] shrink-0" />
+                  <Leaf className="w-5 h-5 text-[#22C55E] shrink-0 drop-shadow-sm" />
                   <span>Eco-Friendly</span>
                 </div>
                 <div className="flex items-center justify-center gap-2">
-                  <Star className="w-4 h-4 text-[#FFD700] shrink-0" />
+                  <Star className="w-5 h-5 text-[#FFD700] shrink-0 drop-shadow-sm" />
                   <span>4.9★ Rating</span>
                 </div>
                 <div className="flex items-center justify-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#FFD700] shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-[#FFD700] shrink-0 drop-shadow-sm" />
                   <span>100% Guaranteed</span>
                 </div>
               </div>
