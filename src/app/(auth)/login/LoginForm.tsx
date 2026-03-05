@@ -62,7 +62,7 @@ export function LoginForm() {
                         className="object-contain"
                     />
                 </div>
-                <h1 className="text-xl font-semibold">Staff Login</h1>
+                <h1 className="text-xl font-semibold">Staff Sign In</h1>
                 <p className="text-sm text-muted-foreground">
                     The Cleanup Crew Operations
                 </p>

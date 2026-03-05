@@ -102,6 +102,12 @@ export default function Header() {
                         </div>
                         +440-98-5298
                     </a>
+                    <Link
+                        href="/login"
+                        className="text-sm font-bold uppercase tracking-wider text-white/70 hover:text-white transition-colors"
+                    >
+                        Sign In
+                    </Link>
                     <Link href="/quote">
                         <motion.button
                             whileHover={{ scale: 1.05 }}
@@ -183,6 +189,11 @@ export default function Header() {
                                 <PhoneCall className="w-5 h-5 text-[#FFD700]" />
                                 +440-98-5298
                             </a>
+                            <Link href="/login" onClick={closeMenu}>
+                                <div className="w-full text-center bg-white/5 border border-white/10 text-white font-bold py-4 rounded-2xl uppercase tracking-wider text-base">
+                                    Sign In
+                                </div>
+                            </Link>
                             <Link href="/quote" onClick={closeMenu}>
                                 <div className="w-full text-center bg-[#FFD700] text-black font-bold py-4 rounded-2xl uppercase tracking-wider text-base mt-3">
                                     Get Free Quote
