@@ -1,13 +1,18 @@
 import { NextResponse } from "next/server";
-import { createSupabaseAdminClient } from "@/lib/supabase/server";
+import { requireDashboardRole } from "@/lib/supabase/route-guards";
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const ALLOWED_STATUSES = ["new", "contacted", "quoted", "booked", "lost", "cancelled"];
 
 export async function GET(request: Request) {
+    const guard = await requireDashboardRole(["admin", "dispatcher", "manager"]);
+    if (!guard.ok) return guard.response;
+
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
     const search = searchParams.get("search");
 
-    const supabase = createSupabaseAdminClient();
-    let query = supabase
+    let query = guard.adminClient
         .from("leads")
         .select(
             "id, name, email, phone, status, source, notes, created_at, updated_at, assigned_to, team_members(name)"
@@ -29,17 +34,52 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-    const body = await request.json();
-    const { name, email, phone, source, status, notes, assigned_to } = body;
+    const guard = await requireDashboardRole(["admin", "dispatcher"]);
+    if (!guard.ok) return guard.response;
 
-    if (!name) {
+    const body = await request.json();
+    const { name, email, phone, source, status, notes, assigned_to } = body ?? {};
+
+    const safeName = String(name ?? "").trim();
+    const safeEmail = email ? String(email).trim().toLowerCase() : null;
+    const safeStatus = status ? String(status).trim() : "new";
+
+    if (!safeName) {
         return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
 
-    const supabase = createSupabaseAdminClient();
-    const { data, error } = await supabase
+    if (safeEmail && !EMAIL_REGEX.test(safeEmail)) {
+        return NextResponse.json({ error: "Please provide a valid email address." }, { status: 400 });
+    }
+
+    if (!ALLOWED_STATUSES.includes(safeStatus)) {
+        return NextResponse.json({ error: "Invalid lead status." }, { status: 400 });
+    }
+
+    if (assigned_to) {
+        const { data: member } = await guard.adminClient
+            .from("team_members")
+            .select("id")
+            .eq("id", assigned_to)
+            .eq("is_active", true)
+            .maybeSingle();
+
+        if (!member) {
+            return NextResponse.json({ error: "Assigned team member was not found." }, { status: 400 });
+        }
+    }
+
+    const { data, error } = await guard.adminClient
         .from("leads")
-        .insert({ name, email, phone, source, status, notes, assigned_to })
+        .insert({
+            name: safeName,
+            email: safeEmail,
+            phone: phone ? String(phone).trim() : null,
+            source: source ? String(source).trim() : "manual",
+            status: safeStatus,
+            notes: notes ? String(notes).trim() : null,
+            assigned_to: assigned_to ?? null,
+        })
         .select()
         .single();
 

@@ -62,13 +62,13 @@ export default function QuotePage() {
             <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#FFC107]/10 rounded-full blur-[150px] pointer-events-none"></div>
 
             <div className="container mx-auto px-5 md:px-4 max-w-3xl relative z-10 w-full">
-                <div className="mb-8 md:mb-12 text-center">
+                <div className="mb-8 md:mb-12 text-center rounded-2xl border border-black/10 bg-white/80 p-6 md:p-8 shadow-sm">
                     <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-[#1A1A1A] mb-3 md:mb-4">Your Instant Estimate</h1>
                     <p className="text-muted-foreground text-sm md:text-base">Answer a few simple questions to get your crystal clear price.</p>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="mb-8 md:mb-12 relative w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                <div className="mb-8 md:mb-12 relative w-full h-2 bg-black/10 rounded-full overflow-hidden">
                     <motion.div
                         className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-[#FFD700] to-[#FFC107]"
                         initial={{ width: '25%' }}
@@ -77,7 +77,7 @@ export default function QuotePage() {
                     />
                 </div>
 
-                <div className="bg-white/85 backdrop-blur-xl border border-black/10 rounded-2xl md:rounded-3xl p-5 md:p-12 shadow-2xl relative">
+                <div className="bg-white/90 backdrop-blur-xl border border-black/10 rounded-2xl md:rounded-3xl p-5 md:p-12 shadow-xl relative">
                     <AnimatePresence mode="wait">
                         {/* STEP 1: PROPERTY TYPE */}
                         {step === 1 && (

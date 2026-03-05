@@ -17,13 +17,16 @@ export default async function AgentProfilePage() {
 
     return (
         <div className="px-4 pt-6 space-y-5">
-            <h1 className="text-2xl font-semibold">My Profile</h1>
+            <div className="rounded-2xl border border-black/10 bg-gradient-to-r from-white via-[#FFFCEF] to-[#F8F6F0] p-5 shadow-sm">
+                <h1 className="text-2xl font-semibold tracking-tight">My Profile</h1>
+                <p className="text-sm text-muted-foreground mt-0.5">Your account details and team information.</p>
+            </div>
 
             {member ? (
-                <Card>
+                <Card className="border-black/10 bg-white shadow-sm">
                     <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
-                            <CardTitle className="text-lg">{member.name}</CardTitle>
+                            <CardTitle className="text-lg tracking-tight">{member.name}</CardTitle>
                             <Badge variant="outline" className="capitalize text-xs">
                                 {member.role.replace("_", " ")}
                             </Badge>

@@ -78,9 +78,9 @@ export default async function DispatchPage({
 
     return (
         <div className="p-6 space-y-6 max-w-7xl">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between rounded-2xl border border-black/10 bg-white/90 p-5 shadow-sm">
                 <div>
-                    <h1 className="text-2xl font-semibold">Dispatch</h1>
+                    <h1 className="text-2xl font-semibold tracking-tight">Dispatch</h1>
                     <p className="text-sm text-muted-foreground mt-0.5">
                         {assignments.length} job{assignments.length !== 1 ? "s" : ""}
                     </p>
@@ -89,15 +89,15 @@ export default async function DispatchPage({
             </div>
 
             {/* Status filter */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 rounded-xl border border-black/10 bg-[#FCFAF3] p-3">
                 {STATUSES.map((s) => (
                     <Link
                         key={s}
                         href={`/dashboard/dispatch?status=${s}`}
                         className={`px-3 py-1.5 rounded-full text-xs font-medium capitalize border transition-colors ${
                             status === s
-                                ? "bg-foreground text-background border-foreground"
-                                : "border-border text-muted-foreground hover:border-foreground/30"
+                                ? "bg-[#1A1A1A] text-white border-[#1A1A1A] shadow-sm"
+                                : "border-border text-muted-foreground hover:border-[#9A7B00]/40 hover:text-foreground"
                         }`}
                     >
                         {s.replace("_", " ")}
@@ -105,7 +105,7 @@ export default async function DispatchPage({
                 ))}
             </div>
 
-            <div className="rounded-lg border border-border overflow-hidden">
+            <div className="rounded-xl border border-black/10 overflow-hidden bg-white shadow-sm">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -129,7 +129,7 @@ export default async function DispatchPage({
                             </TableRow>
                         ) : (
                             assignments.map((a) => (
-                                <TableRow key={a.id} className="cursor-pointer hover:bg-muted/40">
+                                <TableRow key={a.id} className="cursor-pointer hover:bg-[#F8F5EA]">
                                     <TableCell className="text-sm">
                                         <Link
                                             href={`/dashboard/dispatch/${a.id}`}

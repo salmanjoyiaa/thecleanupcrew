@@ -40,8 +40,8 @@ export default async function AgentJobsPage() {
 
     return (
         <div className="px-4 pt-6 space-y-5">
-            <div>
-                <h1 className="text-2xl font-semibold">All My Jobs</h1>
+            <div className="rounded-2xl border border-black/10 bg-gradient-to-r from-white via-[#FFFCEF] to-[#F8F6F0] p-5 shadow-sm">
+                <h1 className="text-2xl font-semibold tracking-tight">All My Jobs</h1>
                 <p className="text-sm text-muted-foreground mt-0.5">
                     {allJobs.length} assignment{allJobs.length !== 1 ? "s" : ""}
                 </p>
@@ -59,10 +59,10 @@ export default async function AgentJobsPage() {
                             <Link
                                 key={job.id}
                                 href={`/agent/jobs/${job.id}`}
-                                className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:bg-muted/40 transition-colors"
+                                className="flex items-center gap-3 p-4 rounded-xl border border-black/10 bg-white shadow-sm hover:bg-[#F8F5EA] hover:shadow-md transition-all"
                             >
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-medium truncate">
+                                    <p className="font-semibold truncate">
                                         {place?.address ?? "Job"}
                                     </p>
                                     {place?.city && (

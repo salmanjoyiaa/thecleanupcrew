@@ -46,7 +46,7 @@ export default function GalleryPage() {
         <div className="bg-[#F8F6F0] min-h-screen pt-24 md:pt-32 pb-16 md:pb-24">
             <section className="container mx-auto px-5 md:px-4 mb-10 md:mb-16">
                 <RevealOnScroll>
-                    <div className="max-w-4xl mx-auto text-center">
+                    <div className="max-w-4xl mx-auto text-center rounded-2xl border border-black/10 bg-white/80 p-6 md:p-8 shadow-sm">
                         <p className="text-[#FFD700] text-sm font-semibold uppercase tracking-widest mb-3 md:mb-4">Our Portfolio</p>
                         <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-[#1A1A1A] mb-5 md:mb-6 leading-tight">
                             Work That <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] to-[#FFC107]">Speaks</span> For Itself
@@ -62,7 +62,7 @@ export default function GalleryPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                     {projects.map((project, i) => (
                         <RevealOnScroll key={i} delay={i * 0.1}>
-                            <div className="bg-white border border-black/10 rounded-2xl overflow-hidden group hover:border-[#FFD700]/20 transition-all duration-500">
+                            <div className="bg-white border border-black/10 rounded-2xl overflow-hidden group hover:border-[#FFD700]/20 hover:shadow-md transition-all duration-500">
                                 {/* Image placeholder with gradient */}
                                 <div className="h-40 md:h-48 bg-gradient-to-br from-white to-[#EFE8D8] relative overflow-hidden">
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#F8F6F0] to-transparent z-10" />
@@ -96,7 +96,7 @@ export default function GalleryPage() {
             {/* CTA */}
             <section className="container mx-auto px-5 md:px-4 mt-16 md:mt-24">
                 <RevealOnScroll>
-                    <div className="text-center">
+                    <div className="text-center rounded-2xl border border-black/10 bg-white/80 p-6 md:p-8 shadow-sm">
                         <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-4 md:mb-6">Want Results Like These?</h2>
                         <p className="text-muted-foreground text-base md:text-lg mb-6 md:mb-8 max-w-xl mx-auto">Get a free, no-obligation quote and join hundreds of happy Canadian homeowners and businesses.</p>
                         <Link href="/quote" className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-[#FFD700] text-black font-bold rounded-full hover:bg-white transition-all hover:scale-105 uppercase tracking-wider text-sm">

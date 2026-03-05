@@ -43,9 +43,10 @@ export default async function TeamMemberDetailPage({
                 All Team Members
             </Link>
 
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start justify-between gap-4 rounded-2xl border border-black/10 bg-white/90 p-5 shadow-sm">
                 <div>
-                    <h1 className="text-2xl font-semibold">{member.name}</h1>
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9A7B00]">Team Member</p>
+                    <h1 className="mt-2 text-2xl font-semibold tracking-tight">{member.name}</h1>
                     <div className="flex items-center gap-2 mt-2">
                         <Badge
                             variant="outline"
@@ -64,7 +65,7 @@ export default async function TeamMemberDetailPage({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Card>
+                <Card className="border-black/10 bg-white shadow-sm">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm text-muted-foreground font-medium">
                             Contact Info
@@ -94,7 +95,7 @@ export default async function TeamMemberDetailPage({
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="border-black/10 bg-white shadow-sm">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm text-muted-foreground font-medium">
                             Employment

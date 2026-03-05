@@ -53,7 +53,8 @@ export default function ContactPage() {
 
             <div className="container mx-auto px-5 md:px-4 relative z-10">
                 <RevealOnScroll>
-                    <div className="max-w-3xl mx-auto text-center mb-10 md:mb-16">
+                    <div className="max-w-3xl mx-auto text-center mb-10 md:mb-16 rounded-2xl border border-black/10 bg-white/80 p-6 md:p-8 shadow-sm">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9A7B00] mb-3">Contact</p>
                         <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-[#1A1A1A] mb-4 md:mb-6 leading-tight">Get In Touch</h1>
                         <p className="text-muted-foreground text-base md:text-lg">Ready for a cleaner space? Whether it&apos;s a luxury residence or a commercial property, our team is ready to help.</p>
                     </div>
@@ -211,7 +212,7 @@ export default function ContactPage() {
                                     </div>
 
                                     {status === "error" && (
-                                        <p className="text-red-400 text-sm">{errorMsg}</p>
+                                        <p className="text-red-600 text-sm font-medium">{errorMsg}</p>
                                     )}
 
                                     <button

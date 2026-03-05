@@ -69,7 +69,7 @@ export default async function AgentJobDetailPage({
             </Link>
 
             {/* Header */}
-            <div>
+            <div className="rounded-2xl border border-black/10 bg-gradient-to-r from-white via-[#FFFCEF] to-[#F8F6F0] p-5 shadow-sm">
                 <div className="flex items-center gap-2 mb-1">
                     <Badge
                         variant="outline"
@@ -101,7 +101,7 @@ export default async function AgentJobDetailPage({
             )}
 
             {/* Schedule */}
-            <Card>
+            <Card className="border-black/10 bg-white shadow-sm">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm text-muted-foreground font-medium flex items-center gap-1.5">
                         <Clock size={14} />
@@ -134,7 +134,7 @@ export default async function AgentJobDetailPage({
 
             {/* Location */}
             {place && (
-                <Card>
+                <Card className="border-black/10 bg-white shadow-sm">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm text-muted-foreground font-medium flex items-center gap-1.5">
                             <MapPin size={14} />
@@ -152,11 +152,11 @@ export default async function AgentJobDetailPage({
                             </div>
                         )}
                         {place.hazards && (
-                            <div className="bg-yellow-500/10 border border-yellow-200 rounded-lg p-3">
-                                <span className="text-yellow-700 text-xs font-semibold block mb-0.5">
+                            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                                <span className="text-amber-700 text-xs font-semibold block mb-0.5">
                                     HAZARDS
                                 </span>
-                                <p className="text-sm text-yellow-800">{place.hazards}</p>
+                                <p className="text-sm text-amber-800">{place.hazards}</p>
                             </div>
                         )}
                     </CardContent>
@@ -165,7 +165,7 @@ export default async function AgentJobDetailPage({
 
             {/* Client */}
             {lead && (
-                <Card>
+                <Card className="border-black/10 bg-white shadow-sm">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm text-muted-foreground font-medium flex items-center gap-1.5">
                             <User size={14} />
@@ -185,7 +185,7 @@ export default async function AgentJobDetailPage({
 
             {/* Notes */}
             {job.notes && (
-                <Card>
+                <Card className="border-black/10 bg-white shadow-sm">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm text-muted-foreground font-medium">
                             Notes

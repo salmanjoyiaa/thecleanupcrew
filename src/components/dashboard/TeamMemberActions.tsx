@@ -32,6 +32,9 @@ export function TeamMemberActions({ member }: { member: TeamMember }) {
     const [payType, setPayType] = useState(member.pay_type ?? "hourly");
     const [region, setRegion] = useState(member.region ?? "");
     const [phone, setPhone] = useState(member.phone ?? "");
+    const [credentialMethod, setCredentialMethod] = useState<"invite_link" | "temp_password">("invite_link");
+    const [temporaryPassword, setTemporaryPassword] = useState("");
+    const [provisioning, setProvisioning] = useState(false);
 
     async function handleSave() {
         setSaving(true);
@@ -60,6 +63,50 @@ export function TeamMemberActions({ member }: { member: TeamMember }) {
         } else {
             toast.error("Failed to deactivate member");
         }
+    }
+
+    async function handleProvisionCredentials() {
+        setProvisioning(true);
+        const res = await fetch(`/api/team/${member.id}/credentials`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                method: credentialMethod,
+                temporaryPassword,
+            }),
+        });
+
+        if (res.ok) {
+            const payload = await res.json();
+            if (payload.temporaryPassword) {
+                try {
+                    await navigator.clipboard.writeText(payload.temporaryPassword);
+                    toast.success("Temporary password copied to clipboard");
+                } catch {
+                    toast.info(`Temporary password: ${payload.temporaryPassword}`);
+                }
+            }
+            if (payload.inviteLink) {
+                try {
+                    await navigator.clipboard.writeText(payload.inviteLink);
+                    toast.success("Invite link copied to clipboard");
+                } catch {
+                    toast.info("Invite link generated successfully");
+                }
+            }
+
+            toast.success(
+                credentialMethod === "invite_link"
+                    ? "Invite processed successfully"
+                    : "Temporary password was reset"
+            );
+            setTemporaryPassword("");
+            router.refresh();
+        } else {
+            const { error } = await res.json();
+            toast.error(error ?? "Failed to manage credentials");
+        }
+        setProvisioning(false);
     }
 
     return (
@@ -126,6 +173,45 @@ export function TeamMemberActions({ member }: { member: TeamMember }) {
                         Deactivate
                     </Button>
                 )}
+            </div>
+
+            <div className="border-t border-border pt-4 space-y-3">
+                <p className="text-sm font-medium">Account Access</p>
+                <div className="space-y-1.5">
+                    <Label>Credential Method</Label>
+                    <Select
+                        value={credentialMethod}
+                        onValueChange={(v) => setCredentialMethod(v as "invite_link" | "temp_password")}
+                    >
+                        <SelectTrigger>
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="invite_link">Invite Link</SelectItem>
+                            <SelectItem value="temp_password">Temporary Password</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                <div className="space-y-1.5">
+                    <Label>Temporary Password</Label>
+                    <Input
+                        value={temporaryPassword}
+                        onChange={(e) => setTemporaryPassword(e.target.value)}
+                        placeholder="Auto-generated if empty"
+                        disabled={credentialMethod !== "temp_password"}
+                    />
+                </div>
+
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleProvisionCredentials}
+                    disabled={provisioning}
+                    className="w-full"
+                >
+                    {provisioning ? "Processing…" : credentialMethod === "invite_link" ? "Send Invite" : "Set Temporary Password"}
+                </Button>
             </div>
         </div>
     );

@@ -7,7 +7,7 @@ export default function AboutPage() {
             {/* Hero Section */}
             <section className="container mx-auto px-5 md:px-4 mb-16 md:mb-24">
                 <RevealOnScroll>
-                    <div className="max-w-4xl mx-auto text-center">
+                    <div className="max-w-4xl mx-auto text-center rounded-2xl border border-black/10 bg-white/80 p-6 md:p-8 shadow-sm">
                         <p className="text-[#FFD700] text-sm font-semibold uppercase tracking-widest mb-3 md:mb-4">About Us</p>
                         <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-[#1A1A1A] mb-5 md:mb-6 leading-tight">
                             Canada&apos;s Most Trusted <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] to-[#FFC107]">Cleaning Crew</span>
@@ -23,7 +23,7 @@ export default function AboutPage() {
             <section className="container mx-auto px-5 md:px-4 mb-20 md:mb-32">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                     <RevealOnScroll delay={0.1}>
-                        <div className="bg-white border border-black/10 rounded-2xl p-6 md:p-8 hover:border-[#FFD700]/30 transition-all duration-500">
+                        <div className="bg-white border border-black/10 rounded-2xl p-6 md:p-8 hover:border-[#FFD700]/30 hover:shadow-md transition-all duration-500">
                             <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-[#FFD700]/10 flex items-center justify-center mb-5 md:mb-6">
                                 <Users className="w-5 h-5 md:w-6 md:h-6 text-[#FFD700]" />
                             </div>
@@ -33,7 +33,7 @@ export default function AboutPage() {
                     </RevealOnScroll>
 
                     <RevealOnScroll delay={0.2}>
-                        <div className="bg-white border border-black/10 rounded-2xl p-6 md:p-8 hover:border-[#22C55E]/30 transition-all duration-500">
+                        <div className="bg-white border border-black/10 rounded-2xl p-6 md:p-8 hover:border-[#22C55E]/30 hover:shadow-md transition-all duration-500">
                             <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-[#22C55E]/10 flex items-center justify-center mb-5 md:mb-6">
                                 <Leaf className="w-5 h-5 md:w-6 md:h-6 text-[#22C55E]" />
                             </div>
@@ -43,7 +43,7 @@ export default function AboutPage() {
                     </RevealOnScroll>
 
                     <RevealOnScroll delay={0.3}>
-                        <div className="bg-white border border-black/10 rounded-2xl p-6 md:p-8 hover:border-[#FFD700]/30 transition-all duration-500">
+                        <div className="bg-white border border-black/10 rounded-2xl p-6 md:p-8 hover:border-[#FFD700]/30 hover:shadow-md transition-all duration-500">
                             <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-[#FFD700]/10 flex items-center justify-center mb-5 md:mb-6">
                                 <ShieldCheck className="w-5 h-5 md:w-6 md:h-6 text-[#FFD700]" />
                             </div>
@@ -53,7 +53,7 @@ export default function AboutPage() {
                     </RevealOnScroll>
 
                     <RevealOnScroll delay={0.4}>
-                        <div className="bg-white border border-black/10 rounded-2xl p-6 md:p-8 hover:border-[#A855F7]/30 transition-all duration-500">
+                        <div className="bg-white border border-black/10 rounded-2xl p-6 md:p-8 hover:border-[#A855F7]/30 hover:shadow-md transition-all duration-500">
                             <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-[#A855F7]/10 flex items-center justify-center mb-5 md:mb-6">
                                 <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6 text-[#A855F7]" />
                             </div>
@@ -66,7 +66,7 @@ export default function AboutPage() {
 
             {/* Story Section */}
             <section className="container mx-auto px-5 md:px-4">
-                <div className="bg-white border border-black/10 rounded-2xl overflow-hidden">
+                <div className="bg-white border border-black/10 rounded-2xl overflow-hidden shadow-sm">
                     <div className="grid grid-cols-1 lg:grid-cols-2">
                         <RevealOnScroll direction="right" className="p-6 py-10 md:p-16 flex flex-col justify-center">
                             <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-[#1A1A1A] mb-5 md:mb-6">Our Story</h2>

@@ -34,6 +34,8 @@ export function CreateTeamMemberDialog() {
         region: "",
         pay_type: "hourly",
     });
+    const [credentialMode, setCredentialMode] = useState<"none" | "invite_link" | "temp_password">("none");
+    const [temporaryPassword, setTemporaryPassword] = useState("");
 
     function update(field: string, value: string) {
         setForm((prev) => ({ ...prev, [field]: value }));
@@ -50,9 +52,55 @@ export function CreateTeamMemberDialog() {
         });
 
         if (res.ok) {
-            toast.success("Team member added");
+            const created = await res.json();
+
+            if (credentialMode !== "none") {
+                const credentialRes = await fetch(`/api/team/${created.id}/credentials`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        method: credentialMode,
+                        temporaryPassword,
+                    }),
+                });
+
+                if (!credentialRes.ok) {
+                    const payload = await credentialRes.json();
+                    toast.error(payload?.error ?? "Member created, but credentials failed.");
+                } else {
+                    const payload = await credentialRes.json();
+                    if (payload.temporaryPassword) {
+                        try {
+                            await navigator.clipboard.writeText(payload.temporaryPassword);
+                            toast.success("Temporary password copied to clipboard");
+                        } catch {
+                            toast.info(`Temporary password: ${payload.temporaryPassword}`);
+                        }
+                    }
+
+                    if (payload.inviteLink) {
+                        try {
+                            await navigator.clipboard.writeText(payload.inviteLink);
+                            toast.success("Invite link copied to clipboard");
+                        } catch {
+                            toast.info("Invite link generated successfully");
+                        }
+                    }
+
+                    toast.success(
+                        credentialMode === "invite_link"
+                            ? "Team member added and invite generated"
+                            : "Team member added with temporary password"
+                    );
+                }
+            } else {
+                toast.success("Team member added");
+            }
+
             setOpen(false);
             setForm({ name: "", email: "", phone: "", role: "field_agent", region: "", pay_type: "hourly" });
+            setCredentialMode("none");
+            setTemporaryPassword("");
             router.refresh();
         } else {
             const { error } = await res.json();
@@ -147,6 +195,37 @@ export function CreateTeamMemberDialog() {
                             onChange={(e) => update("region", e.target.value)}
                             placeholder="Toronto, Mississauga…"
                         />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                            <Label>Login Setup</Label>
+                            <Select
+                                value={credentialMode}
+                                onValueChange={(v) =>
+                                    setCredentialMode(v as "none" | "invite_link" | "temp_password")
+                                }
+                            >
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="none">Create member only</SelectItem>
+                                    <SelectItem value="invite_link">Send invite link</SelectItem>
+                                    <SelectItem value="temp_password">Set temporary password</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="tm-temp-password">Temporary Password</Label>
+                            <Input
+                                id="tm-temp-password"
+                                value={temporaryPassword}
+                                onChange={(e) => setTemporaryPassword(e.target.value)}
+                                placeholder="Auto-generated if empty"
+                                disabled={credentialMode !== "temp_password"}
+                            />
+                        </div>
                     </div>
 
                     <div className="flex justify-end gap-2 pt-2">

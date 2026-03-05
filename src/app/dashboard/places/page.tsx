@@ -8,8 +8,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { CreatePlaceDialog } from "@/components/dashboard/CreatePlaceDialog";
 
 async function getPlaces() {
     const supabase = createSupabaseAdminClient();
@@ -32,10 +31,7 @@ export default async function PlacesPage() {
                         {places.length} job site{places.length !== 1 ? "s" : ""}
                     </p>
                 </div>
-                <Button size="sm" className="gap-1.5" disabled>
-                    <Plus size={16} />
-                    Add Place
-                </Button>
+                <CreatePlaceDialog />
             </div>
 
             <div className="rounded-lg border border-border overflow-hidden">
@@ -56,7 +52,7 @@ export default async function PlacesPage() {
                                     colSpan={5}
                                     className="text-center py-12 text-muted-foreground"
                                 >
-                                    No places yet. Places will appear here once jobs are created with a location.
+                                    No places yet. Add your first place to start scheduling jobs.
                                 </TableCell>
                             </TableRow>
                         ) : (

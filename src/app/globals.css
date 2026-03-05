@@ -95,6 +95,28 @@ body.menu-open {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .parallax-layer {
+    transform: none !important;
+  }
+
+  .animate-gradient-text,
+  .animate-pulse-glow,
+  .animate-marquee,
+  .particle {
+    animation: none !important;
+  }
+
+  * {
+    transition-duration: 120ms !important;
+    animation-duration: 120ms !important;
+  }
+}
+
 /* Animated gradient text */
 @keyframes gradient-shift {
 

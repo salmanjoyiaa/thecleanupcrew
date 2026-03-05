@@ -22,7 +22,9 @@ async function getTeamMembers() {
     const supabase = createSupabaseAdminClient();
     const { data } = await supabase
         .from("team_members")
-        .select("id, name, email, phone, role, region, pay_type, is_active, created_at")
+        .select(
+            "id, name, email, phone, role, region, pay_type, is_active, auth_user_id, credentials_sent, last_invite_method, created_at"
+        )
         .order("name");
     return data ?? [];
 }
@@ -54,13 +56,14 @@ export default async function TeamPage() {
                             <TableHead>Region</TableHead>
                             <TableHead>Pay Type</TableHead>
                             <TableHead>Status</TableHead>
+                            <TableHead>Account</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {members.length === 0 ? (
                             <TableRow>
                                 <TableCell
-                                    colSpan={6}
+                                    colSpan={7}
                                     className="text-center py-12 text-muted-foreground"
                                 >
                                     No team members yet.
@@ -104,6 +107,19 @@ export default async function TeamPage() {
                                         <Badge variant="outline" className={member.is_active ? "text-green-600" : "text-gray-400"}>
                                             {member.is_active ? "Active" : "Inactive"}
                                         </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        {member.auth_user_id ? (
+                                            <Badge variant="outline" className="text-emerald-700 border-emerald-300 bg-emerald-50">
+                                                Login Enabled
+                                            </Badge>
+                                        ) : member.credentials_sent ? (
+                                            <Badge variant="outline" className="text-amber-700 border-amber-300 bg-amber-50">
+                                                Invite Pending
+                                            </Badge>
+                                        ) : (
+                                            <span className="text-sm text-muted-foreground">Not provisioned</span>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             ))

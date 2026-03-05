@@ -17,6 +17,16 @@ export default function Home() {
           <HeroScene />
         </div>
 
+        <ParallaxLayer speed={-0.12} className="absolute inset-0 z-[8] pointer-events-none">
+          <div className="absolute top-[12%] left-[8%] h-44 w-44 rounded-full bg-[#FFD700]/12 blur-3xl" />
+          <div className="absolute bottom-[18%] right-[12%] h-56 w-56 rounded-full bg-emerald-300/10 blur-3xl" />
+        </ParallaxLayer>
+
+        <ParallaxLayer speed={-0.28} className="absolute inset-0 z-[9] pointer-events-none">
+          <div className="absolute top-[24%] right-[20%] h-20 w-20 rounded-full border border-[#FFD700]/40 bg-white/40 backdrop-blur-md" />
+          <div className="absolute bottom-[22%] left-[18%] h-16 w-16 rounded-full border border-black/10 bg-white/70" />
+        </ParallaxLayer>
+
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#F8F6F0]/35 via-[#F8F6F0]/10 to-[#F8F6F0]/60 z-10 pointer-events-none" />
 

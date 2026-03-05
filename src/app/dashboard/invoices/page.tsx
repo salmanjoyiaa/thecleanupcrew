@@ -31,14 +31,14 @@ export default async function InvoicesPage() {
 
     return (
         <div className="p-6 space-y-6 max-w-7xl">
-            <div>
-                <h1 className="text-2xl font-semibold">Invoices</h1>
+            <div className="rounded-2xl border border-black/10 bg-white/90 p-5 shadow-sm">
+                <h1 className="text-2xl font-semibold tracking-tight">Invoices</h1>
                 <p className="text-sm text-muted-foreground mt-0.5">
                     {invoices.length} invoice{invoices.length !== 1 ? "s" : ""}
                 </p>
             </div>
 
-            <div className="rounded-lg border border-border overflow-hidden">
+            <div className="rounded-xl border border-black/10 overflow-hidden bg-white shadow-sm">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -57,12 +57,12 @@ export default async function InvoicesPage() {
                                     colSpan={6}
                                     className="text-center py-12 text-muted-foreground"
                                 >
-                                    No invoices yet. Invoices will appear here once jobs are completed.
+                                    No invoices yet. Completed jobs can be invoiced from dispatch.
                                 </TableCell>
                             </TableRow>
                         ) : (
                             invoices.map((inv) => (
-                                <TableRow key={inv.id} className="hover:bg-muted/40">
+                                <TableRow key={inv.id} className="hover:bg-[#F8F5EA]">
                                     <TableCell className="text-sm">
                                         {new Date(inv.created_at).toLocaleDateString("en-CA")}
                                     </TableCell>

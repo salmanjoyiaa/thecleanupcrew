@@ -53,12 +53,12 @@ export default async function AgentHomePage() {
     return (
         <div className="px-4 pt-6 space-y-6">
             {/* Header */}
-            <div>
+            <div className="rounded-2xl border border-black/10 bg-gradient-to-r from-white via-[#FFFCEF] to-[#F8F6F0] p-5 shadow-sm">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
                     <Calendar size={12} />
                     {today}
                 </p>
-                <h1 className="text-2xl font-semibold mt-1">
+                <h1 className="text-2xl font-semibold mt-1 tracking-tight">
                     Good {getTimeOfDay()}, {member?.name?.split(" ")[0] ?? "there"}
                 </h1>
                 <p className="text-muted-foreground text-sm mt-0.5">
@@ -79,10 +79,10 @@ export default async function AgentHomePage() {
                             <Link
                                 key={job.id}
                                 href={`/agent/jobs/${job.id}`}
-                                className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:bg-muted/40 transition-colors"
+                                className="flex items-center gap-3 p-4 rounded-xl border border-black/10 bg-white shadow-sm hover:bg-[#F8F5EA] hover:shadow-md transition-all"
                             >
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-medium truncate">
+                                    <p className="font-semibold truncate">
                                         {place?.address ?? "Job"}
                                     </p>
                                     {place?.city && (
